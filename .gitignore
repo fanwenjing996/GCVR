@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# Large benchmark datasets
+data/NCBI-Sim/
+data/RefSeq-Artificial/
+
+# Generated results
+results/
+output/
+
+# IDE
+.idea/
+.vscode/
