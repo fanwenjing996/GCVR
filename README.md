@@ -150,17 +150,6 @@ python correction/propagate.py \
 
 The propagation procedure uses the initial prediction confidence and neighborhood consistency to regulate information propagation. PHROG-derived functional evidence is incorporated as complementary biological information.
 
-The main parameters used in the reported experiments include:
-
-| Parameter       | Value | Description                                    |
-| --------------- | ----: | ---------------------------------------------- |
-| `--iter`        |     8 | Number of propagation iterations               |
-| `--gamma_phrog` |  0.15 | Strength of the PHROG functional prior         |
-| `--gamma_push`  |  0.10 | Strength of the neighborhood-consensus term    |
-| `--temperature` |  0.55 | Temperature parameter for score transformation |
-
-The exact parameter settings should be interpreted together with the corresponding experimental configuration described in the manuscript.
-
 ### Step 6 — Score Fusion
 
 After independent propagation on the MKNN and SNN graphs, the two refined prediction scores are combined to obtain the final GCVR score.
