@@ -11,3 +11,5 @@ dependencies:
   - scikit-learn
   - biopython
   - tqdm
+  - prodigal
+  - hmmer
