@@ -3,15 +3,6 @@
 """
 GCVR — Ensemble of MKNN and SNN propagation results.
 
-Fuse the refined scores of the two graphs (MKNN and SNN) via a fixed weight:
-    S_final = w * S_snn + (1 - w) * S_mknn
-
-The default weight w = 0.5 corresponds to the arithmetic mean of the two
-graphs (the "Full GCVR" method reported in the paper).
-
-Usage:
-    python ensemble.py --mknn mknn_result.tsv --snn snn_result.tsv \
-        --output final_result.tsv [--weight 0.5]
 """
 
 import argparse
