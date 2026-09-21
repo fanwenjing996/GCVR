@@ -3,6 +3,8 @@
 """
 GCVR: Confidence-Aware Viral Identification through Graph Propagation.
 
+"""
+
 import pandas as pd
 import numpy as np
 import argparse
@@ -11,7 +13,7 @@ from collections import defaultdict
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="GCVR — Graph Propagation (improved)")
+    parser = argparse.ArgumentParser(description="GCVR — Graph Propagation")
 
     parser.add_argument("--master", required=True, help="Master table (CSV)")
     parser.add_argument("--edges", required=True, help="Edge list file (TSV)")
@@ -36,7 +38,6 @@ def parse_args():
 
 
 def sigmoid(x):
-    """Numerically stable sigmoid."""
     return 1.0 / (1.0 + np.exp(-np.clip(x, -50, 50)))
 
 
@@ -61,7 +62,7 @@ def compute_metrics(yt, yp):
 def run_propagation():
     args = parse_args()
 
-    print(f"\n🚀 Starting GCVR Propagation (improved)")
+    print(f"\n Starting GCVR Propagation")
     print(f"[*] Master : {args.master}")
     print(f"[*] Edges  : {args.edges}")
     print(f"[*] iter={args.iter}, gamma_phrog={args.gamma_phrog}, gamma_push={args.gamma_push}")
@@ -85,7 +86,7 @@ def run_propagation():
         length_map = {n: 3000.0 for n in nodes}  # fallback
 
     # ── PHROG signal with category specificity ─────────────────────
-    # Category weights (paper defaults)
+    # # PHROG category weights used in the default configuration
     w_p = np.array([0.86, 0.94, 0.79, 0.63, 0.55, 0.75, 0.64, 0.34, 0.43])
     # Dataset-adaptive weights can be passed via --phrog_weights
     if hasattr(args, 'phrog_weights') and args.phrog_weights:
@@ -200,7 +201,6 @@ def run_propagation():
     for it in range(args.iter):
         S_new = S.copy()
 
-        # In anchor phase, identify and use anchors
         if it >= anchor_phase_start and it == anchor_phase_start:
             # Select anchors: high confidence + high score + PHROG reliable
             for idx in range(n_nodes):
@@ -222,13 +222,6 @@ def run_propagation():
             n_idxs = [node_to_idx[nb[0]] for nb in neighs]
             n_weights_raw = np.array([nb[1] for nb in neighs], dtype=np.float64)
             n_scores = S[n_idxs]
-
-            # ── Anchor-phase edge boosting ────────────────────────
-            if it >= anchor_phase_start and anchor_mask[i]:
-                # This node is an anchor — boost its own retention
-                anchor_boost = 1.0
-            else:
-                anchor_boost = 1.0
 
             # Boost edges FROM anchors to non-anchors
             if it >= anchor_phase_start:
@@ -268,7 +261,6 @@ def run_propagation():
 
             # PHROG signals for this node
             p_val = virus_signal.get(node, 0.0)
-            p_spec = virus_specificity.get(node, 0.0)
             p_comb = virus_signal_combined.get(node, 0.0)
             phrog_reliable = virus_has_specific.get(node, False)
             has_any_phrog = (p_val > 1e-9)
@@ -403,7 +395,7 @@ def run_propagation():
                       f"{ri:>8.4f} | {rr:>8.4f} | {fi:>8.4f} | {fr:>8.4f} | {len(sub):>6}")
 
     result.to_csv(args.output, sep="\t", index=False)
-    print(f"\n✅ Done! Saved to: {args.output}")
+    print(f"\n Done! Saved to: {args.output}")
 
 
 if __name__ == "__main__":
