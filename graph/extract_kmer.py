@@ -5,7 +5,7 @@ import os
 from multiprocessing import Pool, cpu_count
 
 BATCH_SIZE = 2000 
-NUM_CORES = min(15, cpu_count())  #避免内存爆炸
+NUM_CORES = min(15, cpu_count())  
 
 base2int = {'A':0, 'C':1, 'G':2, 'T':3, 'a':0, 'c':1, 'g':2, 't':3}
 
@@ -16,10 +16,9 @@ def seq_3mer_count(seq):
     if L < 3:
         return np.zeros(64, dtype=np.float32)
 
-    # 计算索引
+    
     idx = arr[:-2]*16 + arr[1:-1]*4 + arr[2:]
     
-    # 过滤掉包含非ACGT碱基的k-mer(索引会小于 0)
     mask = (arr[:-2] >= 0) & (arr[1:-1] >= 0) & (arr[2:] >= 0)
     valid_idx = idx[mask]
 
@@ -59,7 +58,6 @@ def extract_3mer(fasta_path):
         records = SeqIO.parse(fasta_path, "fasta")
         chunks = chunked_iterable(records, BATCH_SIZE)
         
-        # 使用 imap 保持顺序并节省存储整个列表的内存
         for matrix, ids in pool.imap(process_batch, chunks):
             all_matrices.append(matrix)
             all_ids.extend(ids)
